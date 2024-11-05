@@ -1,4 +1,4 @@
-package com.s2start.biblia.utils.screen
+package com.s2start.core.screen
 
 import android.os.Parcelable
 import androidx.compose.foundation.background
@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import kotlinx.android.parcel.Parcelize
 
 @OptIn(ExperimentalMaterialApi::class)

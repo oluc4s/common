@@ -1,13 +1,16 @@
 package com.s2start.core
 
 
-data class ModelResult<out T>(val status: Status, val data: T?, val exception: Exception?) {
+data class ModelResult<out T>(val status: Status, val data: T?, val throwable: Throwable?) {
 
     enum class Status {
         SUCCESS,
         LOADING,
         ERROR
     }
+
+    var isSuccess:Boolean = throwable != null
+    val value:Any? = data
 
     companion object {
         fun <T> success(data: T): ModelResult<T> {
@@ -18,8 +21,8 @@ data class ModelResult<out T>(val status: Status, val data: T?, val exception: E
             return ModelResult(Status.LOADING, null, null)
         }
 
-        fun <T> error(exception: Exception): ModelResult<T> {
-            return ModelResult(Status.ERROR, null, exception)
+        fun <T> error(throwable: Throwable): ModelResult<T> {
+            return ModelResult(Status.ERROR, null, throwable)
         }
 
         fun <T> ModelResult<T>.onSuccess(result:(T) -> Unit):ModelResult<T> {
@@ -27,8 +30,8 @@ data class ModelResult<out T>(val status: Status, val data: T?, val exception: E
             return this
         }
 
-        fun <T> ModelResult<T>.onFailure(result:(Exception) -> Unit):ModelResult<T> {
-            if(status == Status.ERROR){   this.exception?.let { result(it) } }
+        fun <T> ModelResult<T>.onFailure(result:(Throwable) -> Unit):ModelResult<T> {
+            if(status == Status.ERROR){   this.throwable?.let { result(it) } }
             return this
         }
 
@@ -39,11 +42,11 @@ data class ModelResult<out T>(val status: Status, val data: T?, val exception: E
     }
 }
 
-fun ModelResult<*>.get(onSuccess: (Any) -> Unit, onFailure: (Exception) -> Unit){
+fun ModelResult<*>.get(onSuccess: (Any) -> Unit, onFailure: (Throwable) -> Unit){
     this.data?.let {
         onSuccess(it)
     }
-    this.exception?.let {
+    this.throwable?.let {
         onFailure(it)
     }
 }

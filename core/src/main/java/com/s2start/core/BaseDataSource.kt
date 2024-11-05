@@ -18,6 +18,6 @@ abstract class BaseDataSource {
     }
 
     private fun <T> error(e: Exception): ModelResult<T> {
-        return ModelResult.error(exception = e)
+        return ModelResult.error(throwable = e)
     }
 }

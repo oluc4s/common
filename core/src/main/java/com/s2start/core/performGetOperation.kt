@@ -7,18 +7,18 @@ import kotlinx.coroutines.Dispatchers
 import java.lang.Exception
 
 fun <T, A> performGetOperation(databaseQuery: () -> LiveData<T>,
-                               networkCall: suspend () -> GenesisResult<A>,
-                               saveCallResult: suspend (A) -> Unit): LiveData<GenesisResult<T>> =
+                               networkCall: suspend () -> ModelResult<A>,
+                               saveCallResult: suspend (A) -> Unit): LiveData<ModelResult<T>> =
     liveData(Dispatchers.IO) {
-        emit(GenesisResult.loading())
-        val source = databaseQuery.invoke().map { GenesisResult.success(it) }
+        emit(ModelResult.loading())
+        val source = databaseQuery.invoke().map { ModelResult.success(it) }
         emitSource(source)
 
         val responseStatus = networkCall.invoke()
-        if (responseStatus.status == GenesisResult.Status.SUCCESS) {
+        if (responseStatus.status == ModelResult.Status.SUCCESS) {
             saveCallResult(responseStatus.data!!)
-        } else if (responseStatus.status == GenesisResult.Status.ERROR) {
-            emit(GenesisResult.error(Exception("ao converter ")))
+        } else if (responseStatus.status == ModelResult.Status.ERROR) {
+            emit(ModelResult.error(Exception("Error Parse To Model")))
             emitSource(source)
         }
     }

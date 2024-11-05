@@ -63,18 +63,18 @@ dependencies {
 
     //Coil
     implementation(libs.coil.compose)
-    implementation("io.insert-koin:koin-core:3.3.2")
-    implementation("io.insert-koin:koin-android:3.3.2")
-    implementation("io.insert-koin:koin-androidx-compose:3.4.1")
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
 
 
     //Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
-    implementation("com.airbnb.android:lottie-compose:6.4.0")
-    implementation("com.google.android.exoplayer:exoplayer:2.15.1")
-    implementation("com.valentinilk.shimmer:compose-shimmer:1.3.0")
+    implementation(libs.lottie.compose.v640)
+    implementation(libs.exoplayer)
+    implementation(libs.compose.shimmer)
 }
 
 
@@ -83,7 +83,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.oluc4s"
             artifactId = "core"
-            version = "1.3"
+            version = "1.4"
             afterEvaluate {
                 from(components["release"])
             }

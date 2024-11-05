@@ -83,7 +83,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.oluc4s"
             artifactId = "core"
-            version = "1.2"
+            version = "1.3"
             afterEvaluate {
                 from(components["release"])
             }

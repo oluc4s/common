@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.s2start.core"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -49,7 +49,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.oluc4s"
             artifactId = "core"
-            version = "1.0"
+            version = "1.1"
             afterEvaluate {
                 from(components["release"])
             }

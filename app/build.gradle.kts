@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.s2start.common"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.s2start.common"

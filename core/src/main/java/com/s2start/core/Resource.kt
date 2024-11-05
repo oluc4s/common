@@ -9,7 +9,7 @@ data class ModelResult<out T>(val status: Status, val data: T?, val throwable: T
         ERROR
     }
 
-    var isSuccess:Boolean = throwable != null
+    var isSuccess:Boolean = throwable == null
     val value:Any? = data
 
     companion object {

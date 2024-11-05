@@ -56,7 +56,7 @@ inline fun <T,R> ModelResult<T>.map(
     transform:(value:T) -> R
 ): ModelResult<R> = when {
     isSuccess -> result { transform(this.value as T) }
-    else -> ModelResult.error(Throwable(""))
+    else -> ModelResult.error(Throwable("error model"))
 }
 
 inline fun <T> result(block: () -> T): ModelResult<T> = runCatching {

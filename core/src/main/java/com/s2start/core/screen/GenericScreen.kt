@@ -80,6 +80,8 @@ fun GenericScreen(
                     Scaffold(
                         topBar = topBar,
                         bottomBar = bottomBar,
+                        floatingActionButton = floatingActionButton,
+                        floatingActionButtonPosition = floatingActionButtonPosition,
                         snackbarHost = snackbarHost
                     ){ innerPadding ->
                         Column(Modifier.padding(innerPadding)) {

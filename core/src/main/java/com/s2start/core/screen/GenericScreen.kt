@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.FabPosition
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
@@ -42,6 +43,8 @@ fun GenericScreen(
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
+    floatingActionButton: @Composable () -> Unit = {},
+    floatingActionButtonPosition: FabPosition = FabPosition.End,
     content: @Composable () -> Unit,
 ) {
     Column(modifier.fillMaxSize()) {
@@ -89,6 +92,8 @@ fun GenericScreen(
             Scaffold(
                 topBar = topBar,
                 bottomBar = bottomBar,
+                floatingActionButton = floatingActionButton,
+                floatingActionButtonPosition = floatingActionButtonPosition,
                 snackbarHost = snackbarHost
             ){ innerPadding ->
                 Column(Modifier.padding(innerPadding)) {

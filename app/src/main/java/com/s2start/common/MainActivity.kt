@@ -62,9 +62,10 @@ fun ScreenSample(){
                         }
                     }
                 },
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(innerPadding),
+                containerColor = Color.Blue
             ) {
-                Column(Modifier.fillMaxSize().background(Color.Gray)) {
+                Column(Modifier.fillMaxSize()) {
                     Button(onClick = {
                         scope.launch { state.bottomSheetState.show(ShowBottomSheet) }
                     }) {

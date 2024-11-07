@@ -52,20 +52,6 @@ fun GenericScreen(
             ModalBottomSheetLayout(sheetContent = {
                 BottomSheetHandlerScope().run {
                     currentCaller = screenState.bottomSheetState.bottomSheetCaller.value
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp),
-                        contentAlignment = Alignment.Center
-                    ){
-                        Box(modifier = Modifier
-                            .width(38.dp)
-                            .height(4.dp)
-                            .clip(
-                                RoundedCornerShape(2.dp)
-                            )
-                            .background(Color.Gray))
-                    }
-
                     sheetContent()
                     if (!sheetHandled) {
                         Spacer(modifier = Modifier.size(10.dp))
@@ -179,19 +165,6 @@ private fun BottomSheetStateObserver(sheetState: BottomSheetState) {
 }
 
 
-@Composable
-fun BottomSheetLayout(
-    content: @Composable () -> Unit
-){
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(12.dp)) {
-        Spacer(modifier = Modifier.size(10.dp))
-        content.invoke()
-    }
-}
 
 
 interface Caller : Parcelable
@@ -201,3 +174,24 @@ object InitialCaller : Caller
 
 @Parcelize
 object DefaultCaller : Caller
+
+@Composable
+fun BottomSheetLayout(content: @Composable () -> Unit){
+    Column {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp)
+            .background(Color.Red),
+            contentAlignment = Alignment.Center
+        ){
+            Box(modifier = Modifier
+                .width(38.dp)
+                .height(4.dp)
+                .clip(
+                    RoundedCornerShape(2.dp)
+                )
+                .background(Color.Gray))
+        }
+        content()
+    }
+}

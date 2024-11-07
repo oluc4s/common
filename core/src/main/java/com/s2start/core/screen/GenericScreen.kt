@@ -1,6 +1,10 @@
 package com.s2start.core.screen
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Parcelable
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,8 +35,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.android.parcel.Parcelize
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -47,6 +62,7 @@ fun GenericScreen(
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     content: @Composable () -> Unit,
 ) {
+    observeComposeScreenEvent()
     Column(modifier.fillMaxSize()) {
         if (sheetContent != null) {
             ModalBottomSheetLayout(sheetContent = {
@@ -90,8 +106,6 @@ fun GenericScreen(
             }
         }
     }
-
-
 }
 
 
@@ -159,12 +173,71 @@ private fun BottomSheetStateObserver(sheetState: BottomSheetState) {
     if (sheetState.modalBottomSheetState.currentValue == ModalBottomSheetValue.Hidden) {
         sheetState.bottomSheetCaller.value = InitialCaller
     }
-    LaunchedEffect(sheetState.modalBottomSheetState.currentValue) {
-
+    val eventScope = rememberScreenEventScope()
+    LaunchedEffect(sheetState.modalBottomSheetState.currentValue,eventScope) {
+        ScreenEvents._onEvent.tryEmit(
+            ScreenEvent.ScreenBottomSheetStateChangedEvent(
+                sheetState,
+                eventScope
+            )
+        )
     }
 }
 
+object ScreenEvents{
+    internal val _onEvent = MutableSharedFlow<ScreenEvent>(
+        extraBufferCapacity = 2
+    )
+    val onEvent:SharedFlow<ScreenEvent> = _onEvent
+}
 
+sealed class ScreenEvent(open val eventScope: ScreenEventScope){
+    data class ScreenBottomSheetStateChangedEvent(
+        val bottomsheetState: BottomSheetState,
+        override val eventScope: ScreenEventScope
+    ): ScreenEvent(eventScope)
+}
+
+internal fun observeComposeScreenEvent(){
+    ScreenEvents.onEvent
+        .onEach { event ->
+            when(event){
+                is ScreenEvent.ScreenBottomSheetStateChangedEvent -> event.handleEvent()
+            }
+        }.launchIn(CoroutineScope(Dispatchers.IO))
+}
+
+private fun ScreenEvent.ScreenBottomSheetStateChangedEvent.handleEvent(){
+    if(this.eventScope.lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED){
+        val activity = this.eventScope.context.findActivity()
+        activity?.let{
+            Log.e("teste","emit")
+
+        }
+    }
+}
+
+fun Context.findActivity(): Activity?{
+    var context = this
+    while (context is ContextWrapper){
+        if(context is Activity) return context
+        context = context.baseContext
+    }
+    return null
+}
+@Composable
+internal fun rememberScreenEventScope() : ScreenEventScope{
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
+    val isInsideBottomSheetGragment = LocalView.current.isInEditMode
+    return ScreenEventScope(lifecycleOwner,context,isInsideBottomSheetGragment)
+}
+
+data class ScreenEventScope(
+    val lifecycleOwner: LifecycleOwner,
+    val context: Context,
+    val isInsideBottomSheetGragment: Boolean
+)
 
 
 interface Caller : Parcelable
@@ -180,8 +253,7 @@ fun BottomSheetLayout(content: @Composable () -> Unit){
     Column {
         Box(modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 12.dp)
-            .background(Color.Red),
+            .padding(top = 12.dp),
             contentAlignment = Alignment.Center
         ){
             Box(modifier = Modifier

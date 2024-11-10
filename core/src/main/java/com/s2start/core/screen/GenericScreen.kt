@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -53,7 +54,7 @@ import kotlinx.coroutines.flow.onEach
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun GenericScreen(
-    screenState: ScreenState,
+    screenState: ScreenState = rememberScreenState(),
     modifier: Modifier = Modifier,
     sheetContent: (@Composable BottomSheetHandlerScope.() -> Unit)? = null,
     topBar: @Composable () -> Unit = {},
@@ -89,7 +90,7 @@ fun GenericScreen(
                         containerColor= containerColor,
                         snackbarHost = snackbarHost
                     ){ innerPadding ->
-                        Column(Modifier.padding(innerPadding)) {
+                        Column(Modifier.padding(innerPadding).navigationBarsPadding()) {
                             content()
                         }
                     }
@@ -104,7 +105,7 @@ fun GenericScreen(
                 containerColor= containerColor,
                 snackbarHost = snackbarHost
             ){ innerPadding ->
-                Column(Modifier.padding(innerPadding)) {
+                Column(Modifier.padding(innerPadding).navigationBarsPadding()) {
                     content()
                 }
             }
@@ -212,11 +213,10 @@ internal fun observeComposeScreenEvent(){
 }
 
 private fun ScreenEvent.ScreenBottomSheetStateChangedEvent.handleEvent(){
-    if(this.eventScope.lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED){
+    if(this.eventScope.lifecycleOwner.lifecycle.currentState == Lifecycle.State.DESTROYED){
         val activity = this.eventScope.context.findActivity()
         activity?.let{
             Log.e("teste","emit")
-
         }
     }
 }
@@ -253,9 +253,9 @@ object InitialCaller : Caller
 object DefaultCaller : Caller
 
 @Composable
-fun BottomSheetLayout(content: @Composable () -> Unit){
+fun BottomSheetLayout(modifier:Modifier = Modifier ,content: @Composable () -> Unit){
     Column {
-        Box(modifier = Modifier
+        Box(modifier = modifier
             .fillMaxWidth()
             .padding(top = 12.dp),
             contentAlignment = Alignment.Center

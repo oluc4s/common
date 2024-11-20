@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -253,8 +254,11 @@ object InitialCaller : Caller
 object DefaultCaller : Caller
 
 @Composable
-fun BottomSheetLayout(modifier:Modifier = Modifier ,content: @Composable () -> Unit){
-    Column {
+fun BottomSheetLayout(
+    modifier:Modifier = Modifier,
+    content: @Composable () -> Unit
+){
+    Column(modifier = Modifier.padding(top = 12.dp).displayCutoutPadding()) {
         Box(modifier = modifier
             .fillMaxWidth()
             .padding(top = 12.dp),

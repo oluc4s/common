@@ -89,10 +89,15 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.oluc4s"
             artifactId = "core"
-            version = "1.5"
-            afterEvaluate {
-                from(components["release"])
+            version = if (project.gradle.startParameter.taskNames.contains("publishToMavenLocal")) {
+                "99.99.99.LOCAL"
+            } else {
+                "1.5"
             }
         }
+    }
+
+    repositories {
+        mavenLocal()
     }
 }
